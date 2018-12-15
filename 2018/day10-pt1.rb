@@ -57,10 +57,7 @@ points.each(&:move_back_one_second)
 output = Array.new (max_y - min_y + 1) { Array.new((max_x - min_x + 1), ' ') }
 
 points.each do |point|
-  # binding.pry
   output[point.y - min_y][point.x - min_x] = "#"
 end
-
-#Oh god this works on the example but not on my input
 
 puts output.map{|v| v.join('') }.join("\n")
