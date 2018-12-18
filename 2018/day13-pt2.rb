@@ -115,6 +115,8 @@ class Cart
       carts.each do |cart2|
         if cart1.x == cart2.x && cart1.y == cart2.y && cart1.id != cart2.id
           puts "THERE IS A COLLISION AT #{cart1.x}, #{cart1.y} between #{cart1.id} and #{cart2.id}"
+          carts.delete(cart1)
+          carts.delete(cart2)
           return true
         end
       end  
@@ -190,22 +192,25 @@ def print_around_cart(tracks, carts, cart)
   puts around_cart.map { |x| x.join('') }
 end
 
-print_with_carts(tracks, carts)
+# print_with_carts(tracks, carts)
 
 puts "# of carts #{carts.size}"
 collision = false
 
 turn = 1
-while !collision
+while carts.size > 1
+  # puts "Turn #{turn} with #{carts.size} carts left!!"
   carts.each do |cart|
     cart.move(tracks, carts)
   end
 
-  collision = Cart.crashes?(carts)
+  Cart.crashes?(carts)
 
-  puts "Turn #{turn}"
-
-  break if collision 
+  print_with_carts(tracks, carts) if turn == 18220
   turn += 1 
 end
+
+puts carts
+puts carts[0].move(tracks, carts)
+puts "Last cart is #{carts[0].id} at #{carts[0].x}, #{carts[0].y}"
 
