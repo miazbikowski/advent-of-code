@@ -53,7 +53,7 @@ class OpCodesManager:
     def get_modes(modes):
         return [int(mode) for mode in [modes[2], modes[1], modes[0], modes[3:]]]
 
-    def process_opcodes(self,):
+    def process_opcodes(self):
         index = 0
         while self.program_codes[index] != 99:
             mode1, mode2, mode3, opcode = self.get_modes(f"{self.program_codes[index]:05}")
@@ -65,7 +65,8 @@ class OpCodesManager:
                 index += 4
             elif opcode == 3:
                 while(len(self.input_var) == 0):
-                    time.sleep(0.1)
+                    print("Going to sleep...")
+                    time.sleep(1)
 
                 input_var = self.input_var.pop()
                 self.program_codes[self.program_codes[index+1]] = input_var
