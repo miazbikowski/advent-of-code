@@ -11,11 +11,10 @@ class OpCodesManager:
     def __init__(self, program_codes, phase_input, input_signal=None):
         self.program_codes = copy.deepcopy(program_codes)
         self.outputs = []
-        self.input_var = []
+        self.input_var = [phase_input]
         self.feeds_amp = None
         if input_signal:
-            self.input_var = input_signal
-        self.input_var.append(phase_input) # phase_input has to come in 2nd
+            self.input_var.append(input_signal)
 
     def get_param(self, mode, increment, index):
         if mode == 0:
@@ -57,6 +56,7 @@ class OpCodesManager:
         index = 0
         while self.program_codes[index] != 99:
             mode1, mode2, mode3, opcode = self.get_modes(f"{self.program_codes[index]:05}")
+            print("Opcode %d" % opcode)
             if opcode == 1:
                 self.add(mode1, mode2, index)
                 index += 4
@@ -65,9 +65,10 @@ class OpCodesManager:
                 index += 4
             elif opcode == 3:
                 while(len(self.input_var) == 0):
-                    print("Going to sleep...")
-                    time.sleep(1)
+                    # print("Going to sleep...")
+                    time.sleep(0.01)
 
+                print("POP!")
                 input_var = self.input_var.pop()
                 self.program_codes[self.program_codes[index+1]] = input_var
                 index += 2
@@ -91,6 +92,7 @@ class OpCodesManager:
                 break
             else:
                 print("OpCode was bad:", self.program_codes[index])
+                sys.exit(2)
         return self.outputs[-1]
 
 def combinations(items):
@@ -103,32 +105,32 @@ def test1():
     highest_output = 0
     num_amps = 5
     phase_inputs_perms = list(itertools.permutations([5,6,7,8,9], 5))
-    for phase_inputs in phase_inputs_perms:
+    # for phase_inputs in phase_inputs_perms:
         # instantiate the amps with their phase inputs and in the case of A, the input 0
-        amp_a = OpCodesManager(program_codes, phase_inputs[0], 0)
-        amp_b = OpCodesManager(program_codes, phase_inputs[1])
-        amp_c = OpCodesManager(program_codes, phase_inputs[2])
-        amp_d = OpCodesManager(program_codes, phase_inputs[3])
-        amp_e = OpCodesManager(program_codes, phase_inputs[4])
+    amp_a = OpCodesManager(program_codes, phase_inputs[0], 0)
+    amp_b = OpCodesManager(program_codes, phase_inputs[1])
+    amp_c = OpCodesManager(program_codes, phase_inputs[2])
+    amp_d = OpCodesManager(program_codes, phase_inputs[3])
+    amp_e = OpCodesManager(program_codes, phase_inputs[4])
 
-        # set up pointers to each other for setting outputs
-        amp_a.feeds_amp = amp_b
-        amp_b.feeds_amp = amp_c
-        amp_c.feeds_amp = amp_d
-        amp_d.feeds_amp = amp_d
-        amp_e.feeds_amp = amp_a
+    # set up pointers to each other for setting outputs
+    amp_a.feeds_amp = amp_b
+    amp_b.feeds_amp = amp_c
+    amp_c.feeds_amp = amp_d
+    amp_d.feeds_amp = amp_d
+    amp_e.feeds_amp = amp_a
 
-        t1 = threading.Thread(target=amp_a.process_opcodes)
-        t2 = threading.Thread(target=amp_b.process_opcodes)
-        t3 = threading.Thread(target=amp_c.process_opcodes)
-        t4 = threading.Thread(target=amp_d.process_opcodes)
-        t5 = threading.Thread(target=amp_e.process_opcodes)
+    threads = []
+    threads.append(threading.Thread(target=amp_a.process_opcodes))
+    threads.append(threading.Thread(target=amp_b.process_opcodes))
+    threads.append(threading.Thread(target=amp_c.process_opcodes))
+    threads.append(threading.Thread(target=amp_d.process_opcodes))
+    threads.append(threading.Thread(target=amp_e.process_opcodes))
 
-        t1.start()
-        t2.start()
-        t3.start()
-        t4.start()
-        t5.start()
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
 
         # next, find a way to know if the threads have all completed, then check
         # the outputs of each one? I expect only one amp will have an output left.
