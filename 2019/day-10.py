@@ -1,4 +1,5 @@
 print("Welcome to Day 10!")
+from math import atan2, pi
 
 f = open("input10", "r")
 
@@ -10,6 +11,9 @@ class Canditate:
 	def __init__(self, x, y):
 		self.x = x
 		self.y = y
+
+	def angle_between(self, x2, y2:
+		return atan2(x2 - x, y - y2) % (2 * pi)
 
 	def slope(self, looking_at_x, looking_at_y):
 		# m = slope = (y1-y2)/(x1-x2)
@@ -27,7 +31,10 @@ class Canditate:
 
 	def intercepts(self, looking_at_x, looking_at_y, x, y):
 		# y = m*x + b
-		return(y == (self.slope(looking_at_x, looking_at_y) * x) + self.y_intercept(looking_at_x, looking_at_y))
+		intercept = (self.slope(looking_at_x, looking_at_y) * x) + self.y_intercept(looking_at_x, looking_at_y)
+		print(intercept)
+		# print(round(intercept)) ROUND IS TOO AGGRESSIVE
+		return(float(y) == intercept)
 
 	def it_me(self, x, y):
 		return (self.x == x and self.y == y)
@@ -49,9 +56,9 @@ class Canditate:
 
 		return min_x, max_x, min_y, max_y
 
-test1_cand = Canditate(0,0)
-assert test1_cand.intercepts(2, 2, 1,1) == True
-assert test1_cand.intercepts(2, 2, 1, 2) == False
+# test1_cand = Canditate(0,0)
+# assert test1_cand.intercepts(2, 2, 1,1) == True
+# assert test1_cand.intercepts(2, 2, 1, 2) == False
 
 class Grid:
 	def __init__(self, points):
@@ -69,6 +76,26 @@ class Grid:
 				if column != '.':
 					asteroids.append(Canditate(row_index, column_index))
 		return asteroids
+
+	def get_visible(asteroids, check):
+	    visible = set()
+	    for asteroid in asteroids:
+	        if asteroid == check:
+	            continue
+
+	        angle = check.angle_from(asteroid)
+	        visible.add(angle)
+
+	    return len(visible)
+
+	def get_most_visible(asteroid_map):
+	    most_visible = 0
+	    asteroids = None
+	    for asteroid in asteroids:
+	        visible = get_visible(asteroids, asteroid)
+	        most_visible = max(visible, most_visible)
+
+	    return most_visible
 
 	def count_asteroid_los(self, asteroid):
 		total_los = 0
@@ -97,7 +124,7 @@ class Grid:
 					# print(f'Intercept with {potentially_blocking_asteroid.x}, {potentially_blocking_asteroid.y} while checking for LOS on {looking_at_asteroid.x}, {looking_at_asteroid.y}')
 					asteroid_intercepted = True
 			if not asteroid_intercepted:
-			    # print(f'Has LOS on {looking_at_asteroid.x}, {looking_at_asteroid.y}')
+			    print(f'Has LOS on {looking_at_asteroid.x}, {looking_at_asteroid.y}')
 			    total_los +=1
 		return total_los
 
@@ -155,18 +182,23 @@ test_points41 = [
 # ]
 
 grid = Grid(test_points33)
+asteroid = Canditate(5, 8)
 
-# grid = Grid(points)
-for asteroid in grid.asteroids:
-	print(f'({asteroid.x}, {asteroid.y})')
+print(asteroid.intercepts(8, 0, 7, 3))
 
-highest_count = 0
-print(len(grid.asteroids))
-for asteroid in grid.asteroids:
-	count = grid.count_asteroid_los(asteroid)
-	if count > highest_count:
-		highest_count = count
+# print(grid.count_asteroid_los(asteroid))
 
-print(highest_count)
+# # grid = Grid(points)
+# for asteroid in grid.asteroids:
+# 	print(f'({asteroid.x}, {asteroid.y})')
+
+# highest_count = 0
+# print(len(grid.asteroids))
+# for asteroid in grid.asteroids:
+# 	count = grid.count_asteroid_los(asteroid)
+# 	if count > highest_count:
+# 		highest_count = count
+
+# print(highest_count)
 
 
