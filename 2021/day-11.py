@@ -40,12 +40,22 @@ def state(octopi, x, y):
         print(''.join(str(val) for val in line))
     print('\n')
 
+def check_if_synchronized(octopi):
+	for line in octopi:
+		for octopus in line:
+			if octopus != 0:
+				return False
+	return True
+
 
 def resolve(file_as_txt, steps):
     octopi = [[int(char) for char in line] for line in file_as_txt.split('\n')]
     for step in range(0, steps):
         run_step(octopi)
         run_flashes(octopi)
+        if check_if_synchronized(octopi) == True:
+        	print("They octopi have synchronized at step {}".format(step+1))
+        	return
     print(octopi)
     return flash_counts
 
@@ -84,13 +94,13 @@ INPUT_MARC = """4738615556
 3721414667"""
 
 # Have to reset flash_counts since it's a global var
-flash_counts = 0
-assert resolve(TEST, 10) == 204
-flash_counts = 0
-assert resolve(TEST, 100) == 1656
-flash_counts = 0
-assert resolve(INPUT_MARC, 100) == 1615
+# flash_counts = 0
+# assert resolve(TEST, 10) == 204
+# flash_counts = 0
+# assert resolve(TEST, 100) == 1656
+# flash_counts = 0
+# assert resolve(INPUT_MARC, 100) == 1615
 
 flash_counts = 0
-resolve(INPUT_MIA, 100)
+resolve(INPUT_MIA, 10000)
 print(flash_counts)
