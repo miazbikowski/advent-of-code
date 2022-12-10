@@ -82,7 +82,7 @@ file_data.each do |instructions|
   previous_direction = direction
 end
 
-puts $tail_movements.uniq.count + 1
+$tail_movements << [0, 0]
+puts $tail_movements.uniq.count
 
-#6403 is too high
-# 6397 is too high
+# 6396 is too high
