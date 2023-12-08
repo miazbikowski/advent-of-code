@@ -1,4 +1,4 @@
 # advent-of-code
 Advent of Code
 
-My half-baked, inelegant, unrefactored, lazy-ass solutions to AoC
+Quality levels of solutions will really depend on my patience that day (and sometimes my intelligence)
