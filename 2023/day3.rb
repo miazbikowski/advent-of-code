@@ -94,4 +94,4 @@ end
 
 #puts numbers.filter { |num| num.touches_symbol }.map(&:value)
 total =  numbers.filter { |num| num.touches_symbol }.map(&:value).map(&:to_i).sum
-puts "And the grand total is #{total}" # 430589 is too low
+puts "And the grand total is #{total}"
