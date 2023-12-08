@@ -72,12 +72,11 @@ File.open(file_path, "r") do |file|
     end
 end
 
-print numbers
+#print numbers
 
 symbols_to_check = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', '{', '}', '|', '\\', ';', ':', '\'', '"', ',', '<', '>', '/', '?', '~']
 File.open(file_path, "r") do |file|
     file.each_line.with_index do |line, y_index|
-        print "Reading line: #{line}"
         started_number = nil
         line.chars.each_with_index do |char, x_index|
             if symbols_to_check.include?(char) # we found a symbol, now we need to check if it touches any of the numbers
