@@ -22,10 +22,6 @@ class Number
         @value += char
     end
 
-    def get_integer_value
-        @value.to_i
-    end
-
     def update_location(x_index)
         @location.x_end = x_index
     end
@@ -94,3 +90,31 @@ end
 #puts numbers.filter { |num| num.touches_symbol }.map(&:value)
 total =  numbers.filter { |num| num.touches_symbol }.map(&:value).map(&:to_i).sum
 puts "And the grand total is #{total}"
+
+# part 2, now we pay attention only to the * symbols and need to keep track of how many numbers
+# they are adjacent to. Only those with 2 adjacent will be used. Their 2 adjacent numbers need to be multiplied as a gear ratio
+gear_ratios = []
+File.open(file_path, "r") do |file|
+    file.each_line.with_index do |line, y_index|
+        started_number = nil
+        line.chars.each_with_index do |char, x_index|
+            if char == '*' # we found a symbol, now we need to check if it touches any of the numbers
+                adjacent_numbers = []
+                numbers.each do |number|
+                    if number.touches_symbol?(x_index, y_index)
+                        puts "The symbol at #{x_index}, #{y_index} touches #{number.value}"
+                        number.touches_symbol = true
+                        adjacent_numbers << number
+                    end
+                end
+
+                if adjacent_numbers.size == 2
+                    gear_ratios << adjacent_numbers.first.value.to_i * adjacent_numbers.last.value.to_i
+                end
+            end
+        end
+    end
+end
+
+print gear_ratios
+puts "And the gear ratios total is: #{gear_ratios.sum}"
